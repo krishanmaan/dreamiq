@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import '../models/match_model.dart';
 import '../models/player_model.dart';
 import '../utils/theme.dart';
-import '../widgets/live_match_card.dart';
-import '../widgets/upcoming_match_card.dart';
-import '../widgets/trending_player_card.dart';
-import '../widgets/top_player_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
