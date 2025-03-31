@@ -203,382 +203,159 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
-          LiveScoreCard(
-            teamA: IPLTeams.rrTeam,
-            teamB: IPLTeams.cskTeam,
-            result: 'RR beat CHE by 6 runs',
+          // Live Score Card - 40% height, non-scrollable
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.4,
+            child: LiveScoreCard(
+              teamA: IPLTeams.rrTeam,
+              teamB: IPLTeams.cskTeam,
+              result: 'RR beat CHE by 6 runs',
+            ),
           ),
-          _buildTournamentFilters(),
-          Expanded(child: _buildMatchList()),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildTournamentFilters() {
-    return SizedBox(
-      height: 50,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        itemCount: _tournaments.length,
-        itemBuilder: (context, index) {
-          final tournament = _tournaments[index];
-          final isSelected = tournament == _selectedTournament;
-
-          return GestureDetector(
-            onTap: () {
-              setState(() {
-                _selectedTournament = tournament;
-              });
-            },
-            child: Container(
-              margin: const EdgeInsets.only(right: 8),
-              decoration: BoxDecoration(
-                color:
-                    isSelected
-                        ? AppTheme.primaryColor.withValues(alpha: 0.1 * 255)
-                        : null,
-                border: Border.all(
-                  color: isSelected ? AppTheme.primaryColor : Colors.grey[300]!,
-                ),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 6,
-                ),
-                child: Text(
-                  tournament,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color:
-                        isSelected ? AppTheme.primaryColor : Colors.grey[800],
-                    fontWeight:
-                        isSelected ? FontWeight.bold : FontWeight.normal,
+          // Match Cards Section - 30% height
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Kolkata NCC T20',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[800],
+                        ),
+                      ),
+                      const Icon(Icons.chevron_right),
+                      const Spacer(),
+                      const Icon(Icons.notifications_none),
+                    ],
                   ),
                 ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildMatchList() {
-    if (_upcomingMatches.isEmpty) {
-      return const Center(child: Text('No matches available'));
-    }
-
-    final filteredMatches =
-        _upcomingMatches
-            .where((match) => match.tournamentName == _selectedTournament)
-            .toList();
-
-    if (filteredMatches.isEmpty) {
-      return Center(
-        child: Text(
-          'No matches available for $_selectedTournament',
-          style: const TextStyle(color: Colors.grey),
-        ),
-      );
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(12),
-      itemCount: filteredMatches.length,
-      itemBuilder: (context, index) {
-        final match = filteredMatches[index];
-
-        // If it's a new tournament type, show the header
-        if (index == 0 ||
-            match.tournamentName != filteredMatches[index - 1].tournamentName) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (index > 0) const SizedBox(height: 16),
-              _buildTournamentHeader(match.tournamentName),
-              const SizedBox(height: 8),
-              _buildMatchCard(match),
-            ],
-          );
-        }
-
-        return _buildMatchCard(match);
-      },
-    );
-  }
-
-  Widget _buildTournamentHeader(String tournamentName) {
-    return Row(
-      children: [
-        Text(
-          _getTournamentShortName(tournamentName),
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-        ),
-        const SizedBox(width: 8),
-        Text(
-          _getTournamentFullName(tournamentName),
-          style: TextStyle(color: Colors.grey[700], fontSize: 16),
-        ),
-        const Icon(Icons.chevron_right, size: 20, color: Colors.grey),
-      ],
-    );
-  }
-
-  String _getTournamentShortName(String name) {
-    if (name == 'Indian T20 League') {
-      return 'T20';
-    } else if (name == 'ECS T10') {
-      return 'T10';
-    } else if (name == 'Kolkata NCC T20') {
-      return 'T20';
-    } else {
-      return 'T20';
-    }
-  }
-
-  String _getTournamentFullName(String name) {
-    if (name == 'Kolkata NCC T20') {
-      return '• Kolkata NCC T20';
-    } else if (name == 'ECS T10') {
-      return '• ECS T10';
-    } else {
-      return '';
-    }
-  }
-
-  Widget _buildMatchCard(Match match) {
-    final bool isFirstMatch =
-        match.tournamentName == 'Indian T20 League' &&
-        match.teamA.shortName == 'MI';
-
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-        side: BorderSide(color: Colors.grey[200]!),
-      ),
-      elevation: 0,
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                _buildTeamInfo(match.teamA),
-                Expanded(child: _buildMatchCenterInfo(match, isFirstMatch)),
-                _buildTeamInfo(match.teamB),
+                Expanded(
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: _upcomingMatches.length,
+                    itemBuilder: (context, index) {
+                      final match = _upcomingMatches[index];
+                      return Container(
+                        width: MediaQuery.of(context).size.width * 0.85,
+                        margin: const EdgeInsets.only(right: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withValues(alpha: 0.1 * 255),
+                              spreadRadius: 1,
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      _buildTeamInfo(match.teamA),
+                                      const Text(
+                                        ' v ',
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      _buildTeamInfo(match.teamB),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    'Tomorrow, 9:00 AM',
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Divider(height: 1),
+                            Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.amber[100],
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.monetization_on,
+                                          size: 16,
+                                          color: Colors.amber[900],
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          '₹90 Lakhs +',
+                                          style: TextStyle(
+                                            color: Colors.amber[900],
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ],
             ),
-            if (isFirstMatch) ...[
-              const Divider(),
-              Row(
-                children: [
-                  Icon(
-                    Icons.monetization_on,
-                    color: Colors.amber[700],
-                    size: 20,
-                  ),
-                  const SizedBox(width: 4),
-                  Expanded(
-                    child:
-                        isFirstMatch
-                            ? Row(
-                              children: [
-                                Text(
-                                  '₹62 Lakhs +',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.amber[700],
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            )
-                            : Container(),
-                  ),
-                  IconButton(
-                    icon: const Icon(
-                      Icons.notifications_outlined,
-                      color: Colors.grey,
-                    ),
-                    onPressed: () {},
-                    constraints: const BoxConstraints(),
-                    padding: EdgeInsets.zero,
-                    iconSize: 20,
-                  ),
-                ],
-              ),
-            ],
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildTeamInfo(Team team) {
-    return Expanded(
-      child: Column(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image:
-                  team.flagImageUrl.isNotEmpty
-                      ? DecorationImage(
-                        image: NetworkImage(team.flagImageUrl),
-                        fit: BoxFit.cover,
-                      )
-                      : null,
-              color: team.flagImageUrl.isEmpty ? Colors.grey[200] : null,
-            ),
-            child:
-                team.flagImageUrl.isEmpty
-                    ? Center(
-                      child: Text(
-                        team.shortName.substring(0, 1),
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey[700],
-                        ),
-                      ),
-                    )
-                    : null,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            team.shortName,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMatchCenterInfo(Match match, bool isSpecialMatch) {
-    final DateTime matchTime = match.matchTime;
-    final Duration timeLeft = matchTime.difference(DateTime.now());
-
-    String timeDisplay;
-    if (timeLeft.inDays > 0) {
-      timeDisplay = '${timeLeft.inDays}d : ${timeLeft.inHours % 24}h';
-    } else if (timeLeft.inHours > 0) {
-      timeDisplay = '${timeLeft.inHours}h : ${timeLeft.inMinutes % 60}m';
-    } else {
-      timeDisplay = '${timeLeft.inMinutes}m';
-    }
-
-    return Column(
+    return Row(
       children: [
-        if (isSpecialMatch) ...[
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: const Text(
-              'MEGA',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+        Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+              image: NetworkImage(team.flagImageUrl),
+              fit: BoxFit.cover,
             ),
           ),
-          const SizedBox(height: 4),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '₹',
-                style: TextStyle(
-                  color: Colors.red[800],
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-              Text(
-                '75',
-                style: TextStyle(
-                  color: Colors.red[800],
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
-                ),
-              ),
-            ],
-          ),
-          Text(
-            'CRORES +',
-            style: TextStyle(
-              color: Colors.red[800],
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-            ),
-          ),
-        ] else ...[
-          if (match.tournamentName == 'Kolkata NCC T20') ...[
-            Text(
-              '2h : ${timeLeft.inMinutes % 60}m',
-              style: const TextStyle(
-                color: Colors.red,
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-              ),
-            ),
-            const Text(
-              '1:00 PM',
-              style: TextStyle(color: Colors.grey, fontSize: 12),
-            ),
-          ] else if (match.tournamentName == 'ECS T10' &&
-              match.teamA.shortName == 'OEI') ...[
-            Text(
-              '3h : ${timeLeft.inMinutes % 60}m',
-              style: const TextStyle(
-                color: Colors.red,
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-              ),
-            ),
-            const Text(
-              '2:30 PM',
-              style: TextStyle(color: Colors.grey, fontSize: 12),
-            ),
-          ] else if (match.tournamentName == 'ECS T10' &&
-              match.teamA.shortName == 'GOR') ...[
-            Text(
-              '5h : ${timeLeft.inMinutes % 60}m',
-              style: const TextStyle(
-                color: Colors.red,
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-              ),
-            ),
-            const Text(
-              '4:30 PM',
-              style: TextStyle(color: Colors.grey, fontSize: 12),
-            ),
-          ] else if (match.teamA.shortName == 'LSG') ...[
-            const Text(
-              'Tomorrow, 7:30 PM',
-              style: TextStyle(
-                color: Colors.green,
-                fontWeight: FontWeight.bold,
-                fontSize: 13,
-              ),
-            ),
-          ] else ...[
-            Text(
-              timeDisplay,
-              style: const TextStyle(
-                color: Colors.red,
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ],
+        ),
+        const SizedBox(width: 8),
+        Text(
+          team.shortName,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
       ],
     );
   }
