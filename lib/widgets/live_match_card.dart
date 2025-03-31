@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/match_model.dart';
+import '../models/team_model.dart';
 import '../utils/theme.dart';
 
 class LiveMatchCard extends StatelessWidget {

@@ -1,3 +1,5 @@
+import 'team_model.dart';
+
 class Match {
   final String id;
   final String tournamentName;
@@ -41,9 +43,10 @@ class Match {
       pitchReport: json['pitchReport'],
       weatherInfo: json['weatherInfo'],
       matchResult: json['matchResult'],
-      keyHighlights: json['keyHighlights'] != null
-          ? List<String>.from(json['keyHighlights'])
-          : null,
+      keyHighlights:
+          json['keyHighlights'] != null
+              ? List<String>.from(json['keyHighlights'])
+              : null,
     );
   }
 
@@ -77,10 +80,10 @@ class Match {
   // Helper method to get time remaining for upcoming match
   String getTimeRemaining() {
     if (!isUpcoming) return '';
-    
+
     final now = DateTime.now();
     final difference = matchTime.difference(now);
-    
+
     if (difference.inDays > 0) {
       return '${difference.inDays}d ${difference.inHours % 24}h remaining';
     } else if (difference.inHours > 0) {
@@ -92,70 +95,3 @@ class Match {
     }
   }
 }
-
-class Team {
-  final String id;
-  final String name;
-  final String shortName;
-  final String flagImageUrl;
-  final List<String> playerIds;
-  final Map<String, dynamic>? stats;
-  final String? score; // Used for live or completed matches
-
-  Team({
-    required this.id,
-    required this.name,
-    required this.shortName,
-    required this.flagImageUrl,
-    required this.playerIds,
-    this.stats,
-    this.score,
-  });
-
-  // Factory constructor to create a Team from JSON
-  factory Team.fromJson(Map<String, dynamic> json) {
-    return Team(
-      id: json['id'],
-      name: json['name'],
-      shortName: json['shortName'],
-      flagImageUrl: json['flagImageUrl'],
-      playerIds: List<String>.from(json['playerIds']),
-      stats: json['stats'],
-      score: json['score'],
-    );
-  }
-
-  // Convert Team instance to JSON
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'shortName': shortName,
-      'flagImageUrl': flagImageUrl,
-      'playerIds': playerIds,
-      'stats': stats,
-      'score': score,
-    };
-  }
-
-  // Create a copy of the team with optional new values
-  Team copyWith({
-    String? id,
-    String? name,
-    String? shortName,
-    String? flagImageUrl,
-    List<String>? playerIds,
-    Map<String, dynamic>? stats,
-    String? score,
-  }) {
-    return Team(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      shortName: shortName ?? this.shortName,
-      flagImageUrl: flagImageUrl ?? this.flagImageUrl,
-      playerIds: playerIds ?? this.playerIds,
-      stats: stats ?? this.stats,
-      score: score ?? this.score,
-    );
-  }
-} 

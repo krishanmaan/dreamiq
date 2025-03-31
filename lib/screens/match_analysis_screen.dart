@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/match_model.dart';
+import '../models/team_model.dart';
 import '../utils/theme.dart';
 
 class MatchAnalysisScreen extends StatefulWidget {
@@ -64,7 +65,11 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           // Navigate to team builder
-          Navigator.pushNamed(context, '/team-builder', arguments: {'matchId': match.id});
+          Navigator.pushNamed(
+            context,
+            '/team-builder',
+            arguments: {'matchId': match.id},
+          );
         },
         backgroundColor: AppTheme.secondaryColor,
         icon: const Icon(Icons.create),
@@ -98,7 +103,9 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
             Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: const AssetImage('assets/images/stadium_background.jpg'),
+                  image: const AssetImage(
+                    'assets/images/stadium_background.jpg',
+                  ),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(
                     Colors.black.withValues(alpha: 0.5 * 255),
@@ -129,7 +136,7 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
 
   Widget _buildMatchHeader(Match match) {
     final isUpcoming = match.isUpcoming;
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       color: Colors.white,
@@ -149,7 +156,9 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: _getStatusColor(match.status).withValues(alpha: 0.1 * 255),
+                  color: _getStatusColor(
+                    match.status,
+                  ).withValues(alpha: 0.1 * 255),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
@@ -176,11 +185,12 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
           const SizedBox(height: 16),
           Row(
             children: [
-              Expanded(
-                child: _buildTeamInfo(match.teamA),
-              ),
+              Expanded(child: _buildTeamInfo(match.teamA)),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: AppTheme.backgroundColor,
                   shape: BoxShape.circle,
@@ -193,9 +203,7 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
                   ),
                 ),
               ),
-              Expanded(
-                child: _buildTeamInfo(match.teamB, alignRight: true),
-              ),
+              Expanded(child: _buildTeamInfo(match.teamB, alignRight: true)),
             ],
           ),
           if (isUpcoming) ...[
@@ -211,13 +219,13 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
                 children: [
                   Text(
                     isUpcoming ? 'Match starts in' : 'Match Info',
-                    style: const TextStyle(
-                      color: AppTheme.textSecondaryColor,
-                    ),
+                    style: const TextStyle(color: AppTheme.textSecondaryColor),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    isUpcoming ? match.getTimeRemaining() : _getMatchResult(match),
+                    isUpcoming
+                        ? match.getTimeRemaining()
+                        : _getMatchResult(match),
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -235,19 +243,18 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
 
   Widget _buildTeamInfo(Team team, {bool alignRight = false}) {
     return Column(
-      crossAxisAlignment: alignRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      crossAxisAlignment:
+          alignRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisAlignment: alignRight ? MainAxisAlignment.end : MainAxisAlignment.start,
+          mainAxisAlignment:
+              alignRight ? MainAxisAlignment.end : MainAxisAlignment.start,
           children: [
             if (!alignRight) _buildTeamLogo(team),
             if (!alignRight) const SizedBox(width: 8),
             Text(
               team.name,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               textAlign: alignRight ? TextAlign.right : TextAlign.left,
             ),
             if (alignRight) const SizedBox(width: 8),
@@ -274,10 +281,7 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
       height: 40,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(
-          color: Colors.grey.shade300,
-          width: 1,
-        ),
+        border: Border.all(color: Colors.grey.shade300, width: 1),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
@@ -312,7 +316,7 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
       'windSpeed': '5 km/h',
       'chanceOfRain': '10%',
     };
-    
+
     return Card(
       margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: Padding(
@@ -326,10 +330,7 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
                 const SizedBox(width: 8),
                 const Text(
                   'Pitch & Ground Analysis',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
               ],
             ),
@@ -348,22 +349,27 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
                     ],
                   ),
                 ),
-                Container(
-                  height: 90,
-                  width: 1,
-                  color: Colors.grey.shade300,
-                ),
+                Container(height: 90, width: 1, color: Colors.grey.shade300),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(left: 16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildWeatherInfoItem('Weather', pitchReport['weather']!),
+                        _buildWeatherInfoItem(
+                          'Weather',
+                          pitchReport['weather']!,
+                        ),
                         const SizedBox(height: 8),
-                        _buildWeatherInfoItem('Temperature', pitchReport['temperature']!),
+                        _buildWeatherInfoItem(
+                          'Temperature',
+                          pitchReport['temperature']!,
+                        ),
                         const SizedBox(height: 8),
-                        _buildWeatherInfoItem('Rain Chance', pitchReport['chanceOfRain']!),
+                        _buildWeatherInfoItem(
+                          'Rain Chance',
+                          pitchReport['chanceOfRain']!,
+                        ),
                       ],
                     ),
                   ),
@@ -407,10 +413,7 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
         Expanded(
           child: Text(
             value,
-            style: const TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 14,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
           ),
         ),
       ],
@@ -431,10 +434,7 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
         Expanded(
           child: Text(
             value,
-            style: const TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 14,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
           ),
         ),
       ],
@@ -450,9 +450,10 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
       'noResults': 2,
       'teamAAvgScore': 176,
       'teamBAvgScore': 162,
-      'venueStat': '${match.teamA.shortName} have won 3 out of 5 matches at this venue',
+      'venueStat':
+          '${match.teamA.shortName} have won 3 out of 5 matches at this venue',
     };
-    
+
     return Card(
       margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: Padding(
@@ -466,10 +467,7 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
                 const SizedBox(width: 8),
                 const Text(
                   'Head to Head Stats',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
               ],
             ),
@@ -546,9 +544,18 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildStatItem('Total Matches', headToHeadStats['matches'].toString()),
-                _buildStatItem('${match.teamA.shortName} Avg', '${headToHeadStats['teamAAvgScore']}'),
-                _buildStatItem('${match.teamB.shortName} Avg', '${headToHeadStats['teamBAvgScore']}'),
+                _buildStatItem(
+                  'Total Matches',
+                  headToHeadStats['matches'].toString(),
+                ),
+                _buildStatItem(
+                  '${match.teamA.shortName} Avg',
+                  '${headToHeadStats['teamAAvgScore']}',
+                ),
+                _buildStatItem(
+                  '${match.teamB.shortName} Avg',
+                  '${headToHeadStats['teamBAvgScore']}',
+                ),
               ],
             ),
             const Divider(height: 24),
@@ -579,10 +586,7 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
       children: [
         Text(
           value,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 4),
         Text(
@@ -603,18 +607,22 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
       {'name': 'Rohit Sharma', 'team': match.teamA.shortName, 'points': 9.0},
       {'name': 'Kane Williamson', 'team': match.teamB.shortName, 'points': 8.8},
     ];
-    
+
     final topBowlers = [
       {'name': 'Jasprit Bumrah', 'team': match.teamA.shortName, 'points': 9.2},
       {'name': 'Trent Boult', 'team': match.teamB.shortName, 'points': 9.0},
       {'name': 'Rashid Khan', 'team': match.teamB.shortName, 'points': 8.7},
     ];
-    
+
     final topAllRounders = [
       {'name': 'Hardik Pandya', 'team': match.teamA.shortName, 'points': 8.8},
-      {'name': 'Mitchell Santner', 'team': match.teamB.shortName, 'points': 8.5},
+      {
+        'name': 'Mitchell Santner',
+        'team': match.teamB.shortName,
+        'points': 8.5,
+      },
     ];
-    
+
     return Card(
       margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: Padding(
@@ -628,10 +636,7 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
                 const SizedBox(width: 8),
                 const Text(
                   'Best Players for This Match',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
               ],
             ),
@@ -645,11 +650,13 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
               ),
             ),
             const SizedBox(height: 8),
-            ...topBatsmen.map((player) => _buildPlayerRating(
-              player['name'] as String,
-              player['team'] as String,
-              player['points'] as double,
-            )),
+            ...topBatsmen.map(
+              (player) => _buildPlayerRating(
+                player['name'] as String,
+                player['team'] as String,
+                player['points'] as double,
+              ),
+            ),
             const SizedBox(height: 16),
             const Text(
               'Top Bowlers',
@@ -660,11 +667,13 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
               ),
             ),
             const SizedBox(height: 8),
-            ...topBowlers.map((player) => _buildPlayerRating(
-              player['name'] as String,
-              player['team'] as String,
-              player['points'] as double,
-            )),
+            ...topBowlers.map(
+              (player) => _buildPlayerRating(
+                player['name'] as String,
+                player['team'] as String,
+                player['points'] as double,
+              ),
+            ),
             const SizedBox(height: 16),
             const Text(
               'Top All-Rounders',
@@ -675,11 +684,13 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
               ),
             ),
             const SizedBox(height: 8),
-            ...topAllRounders.map((player) => _buildPlayerRating(
-              player['name'] as String,
-              player['team'] as String,
-              player['points'] as double,
-            )),
+            ...topAllRounders.map(
+              (player) => _buildPlayerRating(
+                player['name'] as String,
+                player['team'] as String,
+                player['points'] as double,
+              ),
+            ),
           ],
         ),
       ),
@@ -695,7 +706,10 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
             child: Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.grey.shade200,
                     borderRadius: BorderRadius.circular(4),
@@ -709,10 +723,7 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                Text(
-                  name,
-                  style: const TextStyle(fontSize: 14),
-                ),
+                Text(name, style: const TextStyle(fontSize: 14)),
               ],
             ),
           ),
@@ -725,7 +736,7 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
   Widget _buildRatingStars(double rating) {
     int fullStars = rating.floor();
     bool hasHalfStar = (rating - fullStars) >= 0.5;
-    
+
     return Row(
       children: [
         ...List.generate(
@@ -736,15 +747,13 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
           const Icon(Icons.star_half, color: Colors.amber, size: 16),
         ...List.generate(
           5 - fullStars - (hasHalfStar ? 1 : 0),
-          (index) => const Icon(Icons.star_border, color: Colors.amber, size: 16),
+          (index) =>
+              const Icon(Icons.star_border, color: Colors.amber, size: 16),
         ),
         const SizedBox(width: 4),
         Text(
           rating.toString(),
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
         ),
       ],
     );
@@ -759,7 +768,7 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
       'Rohit Sharma has scored 3 fifties in his last 4 matches against ${match.teamB.shortName}',
       'Consider choosing more players from ${match.teamA.shortName} as they have won 3 out of 5 matches at this venue',
     ];
-    
+
     return Card(
       margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: Padding(
@@ -773,14 +782,14 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
                 const SizedBox(width: 8),
                 const Text(
                   'AI Suggested Picks',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 const Spacer(),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: AppTheme.infoColor.withValues(alpha: 0.1 * 255),
                     borderRadius: BorderRadius.circular(12),
@@ -807,7 +816,9 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
               ],
             ),
             const Divider(height: 24),
-            ...suggestions.map((suggestion) => _buildSuggestionItem(suggestion)),
+            ...suggestions.map(
+              (suggestion) => _buildSuggestionItem(suggestion),
+            ),
           ],
         ),
       ),
@@ -820,19 +831,12 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(
-            Icons.arrow_right,
-            color: AppTheme.infoColor,
-            size: 20,
-          ),
+          const Icon(Icons.arrow_right, color: AppTheme.infoColor, size: 20),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               suggestion,
-              style: const TextStyle(
-                fontSize: 14,
-                height: 1.4,
-              ),
+              style: const TextStyle(fontSize: 14, height: 1.4),
             ),
           ),
         ],
@@ -859,17 +863,32 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
     final year = dateTime.year;
     final hour = dateTime.hour;
     final minute = dateTime.minute;
-    
+
     final monthNames = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
-    
+
     final period = hour >= 12 ? 'PM' : 'AM';
-    final hour12 = hour > 12 ? hour - 12 : hour == 0 ? 12 : hour;
+    final hour12 =
+        hour > 12
+            ? hour - 12
+            : hour == 0
+            ? 12
+            : hour;
     final minuteString = minute.toString().padLeft(2, '0');
-    
-    return '$day ${monthNames[month-1]} $year, $hour12:$minuteString $period';
+
+    return '$day ${monthNames[month - 1]} $year, $hour12:$minuteString $period';
   }
 
   String _getMatchResult(Match match) {
@@ -894,14 +913,16 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
         id: 't1',
         name: 'Royal Challengers Bangalore',
         shortName: 'RCB',
-        flagImageUrl: 'https://pbs.twimg.com/media/GJCsUKsWQAAjTBF?format=jpg&name=small',
+        flagImageUrl:
+            'https://pbs.twimg.com/media/GJCsUKsWQAAjTBF?format=jpg&name=small',
         playerIds: ['p1', 'p2', 'p3', 'p4'],
       ),
       teamB: Team(
         id: 't2',
         name: 'Chennai Super Kings',
         shortName: 'CSK',
-        flagImageUrl: 'https://static.wixstatic.com/media/0293d4_0be320985f284973a119aaada3d6933f~mv2.jpg/v1/fill/w_740,h_513,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0293d4_0be320985f284973a119aaada3d6933f~mv2.jpg',
+        flagImageUrl:
+            'https://static.wixstatic.com/media/0293d4_0be320985f284973a119aaada3d6933f~mv2.jpg/v1/fill/w_740,h_513,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0293d4_0be320985f284973a119aaada3d6933f~mv2.jpg',
         playerIds: ['p5', 'p6', 'p7', 'p8'],
       ),
       pitchReport: {
@@ -917,4 +938,4 @@ class _MatchAnalysisScreenState extends State<MatchAnalysisScreen> {
       },
     );
   }
-} 
+}

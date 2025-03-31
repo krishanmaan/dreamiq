@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../models/match_model.dart';
-import '../models/player_model.dart';
+import '../models/team_model.dart';
 import '../utils/theme.dart';
+import '../data/ipl_teams.dart';
+import '../widgets/live_score_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,19 +13,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String _selectedSport = 'Cricket';
-  final List<String> _sports = ['Cricket', 'Football', 'Kabaddi', 'Basketball'];
+  final List<Match> _upcomingMatches = [];
   final List<String> _tournaments = [
     'Indian T20 League',
-    'ECS T10 Santarem',
-    'Bago T10',
+    'ECS T10',
+    'Kolkata NCC T20',
   ];
-
-  // Mock data for demonstration
-  final List<Match> _upcomingMatches = [];
-  final List<Match> _liveMatches = [];
-  final List<Player> _trendingPlayers = [];
-  final List<Player> _topPlayers = [];
+  String _selectedTournament = 'Indian T20 League';
 
   @override
   void initState() {
@@ -32,180 +28,99 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _loadMockData() {
-    // In a real app, this would be fetched from an API
-    // For now, we're using mock data
-
-    // Create mock teams
-    final miTeam = Team(
-      id: 't1',
-      name: 'Mumbai Indians',
-      shortName: 'MI',
-      flagImageUrl:
-          'https://bcciplayerimages.s3.ap-south-1.amazonaws.com/ipl/MI/Logos/Roundbig/MIroundbig.png',
-      playerIds: ['p1', 'p2', 'p3', 'p4', 'p5'],
-    );
-
-    final kkrTeam = Team(
-      id: 't2',
-      name: 'Kolkata Knight Riders',
-      shortName: 'KKR',
-      flagImageUrl:
-          'https://bcciplayerimages.s3.ap-south-1.amazonaws.com/ipl/KKR/Logos/Roundbig/KKRroundbig.png',
-      playerIds: ['p6', 'p7', 'p8', 'p9', 'p10'],
-    );
-
-    final lsgTeam = Team(
-      id: 't3',
-      name: 'Lucknow Super Giants',
-      shortName: 'LSG',
-      flagImageUrl:
-          'https://bcciplayerimages.s3.ap-south-1.amazonaws.com/ipl/LSG/Logos/Roundbig/LSGroundbig.png',
-      playerIds: ['p11', 'p12', 'p13', 'p14', 'p15'],
-    );
-
-    final pbksTeam = Team(
-      id: 't4',
-      name: 'Punjab Kings',
-      shortName: 'PBKS',
-      flagImageUrl:
-          'https://bcciplayerimages.s3.ap-south-1.amazonaws.com/ipl/PBKS/Logos/Roundbig/PBKSroundbig.png',
-      playerIds: ['p16', 'p17', 'p18', 'p19', 'p20'],
-    );
-
-    // ECS T10 Teams
-    final oeirasTeam = Team(
-      id: 't5',
-      name: 'Oeiras',
-      shortName: 'OEI',
-      flagImageUrl: '',
-      playerIds: [],
-    );
-
-    final gamblersTeam = Team(
-      id: 't6',
-      name: 'Gamblers SC',
-      shortName: 'GAM',
-      flagImageUrl: '',
-      playerIds: [],
-    );
-
-    final gorkhaTeam = Team(
-      id: 't7',
-      name: 'Gorkha 11',
-      shortName: 'GOR',
-      flagImageUrl: '',
-      playerIds: [],
-    );
-
-    final lisbonTeam = Team(
-      id: 't8',
-      name: 'Lisbon Capitals',
-      shortName: 'LCA',
-      flagImageUrl: '',
-      playerIds: [],
-    );
-
-    // Kolkata NCC T20 Teams
-    final alipurduarTeam = Team(
-      id: 't9',
-      name: 'Alipurduar Thunders',
-      shortName: 'AT',
-      flagImageUrl: '',
-      playerIds: [],
-    );
-
-    final darjeelingTeam = Team(
-      id: 't10',
-      name: 'Darjeeling Unstoppables',
-      shortName: 'DU',
-      flagImageUrl: '',
-      playerIds: [],
-    );
-
-    // Create upcoming matches
-    final upcomingMatches = [
-      // MI vs KKR Match
+    // Load IPL matches
+    _upcomingMatches.addAll([
       Match(
         id: 'm1',
         tournamentName: 'Indian T20 League',
-        venue: 'Wankhede Stadium, Mumbai',
-        matchTime: DateTime.now().add(const Duration(hours: 8, minutes: 32)),
+        venue: 'MA Chidambaram Stadium, Chennai',
+        matchTime: DateTime(2024, 4, 2, 19, 30),
         status: 'Upcoming',
-        teamA: miTeam,
-        teamB: kkrTeam,
+        teamA: IPLTeams.cskTeam,
+        teamB: IPLTeams.rcbTeam,
         pitchReport: {
-          'condition': 'Batting friendly',
-          'expected_behavior': 'Good for batting',
+          'condition': 'Dry',
+          'behavior': 'Expected to assist spinners',
         },
-        weatherInfo: {'temperature': '32°C', 'weather': 'Sunny'},
+        weatherInfo: {
+          'temperature': '32°C',
+          'humidity': '75%',
+          'windSpeed': '12 km/h',
+        },
       ),
-      // LSG vs PBKS Match
       Match(
         id: 'm2',
         tournamentName: 'Indian T20 League',
-        venue: 'Ekana Stadium, Lucknow',
-        matchTime: DateTime.now().add(
-          const Duration(days: 1, hours: 7, minutes: 30),
-        ),
+        venue: 'Eden Gardens, Kolkata',
+        matchTime: DateTime(2024, 4, 3, 19, 30),
         status: 'Upcoming',
-        teamA: lsgTeam,
-        teamB: pbksTeam,
+        teamA: IPLTeams.kkrTeam,
+        teamB: IPLTeams.srhTeam,
         pitchReport: {
-          'condition': 'Balanced',
-          'expected_behavior': 'Good for both batting and bowling',
+          'condition': 'Good batting surface',
+          'behavior': 'Even bounce expected',
         },
-        weatherInfo: {'temperature': '30°C', 'weather': 'Clear'},
+        weatherInfo: {
+          'temperature': '30°C',
+          'humidity': '70%',
+          'windSpeed': '8 km/h',
+        },
       ),
-      // Kolkata NCC T20 Match
       Match(
         id: 'm3',
-        tournamentName: 'Kolkata NCC T20',
-        venue: 'Kolkata',
-        matchTime: DateTime.now().add(const Duration(hours: 2, minutes: 2)),
+        tournamentName: 'Indian T20 League',
+        venue: 'Rajiv Gandhi International Stadium, Hyderabad',
+        matchTime: DateTime(2024, 4, 4, 19, 30),
         status: 'Upcoming',
-        teamA: alipurduarTeam,
-        teamB: darjeelingTeam,
+        teamA: IPLTeams.srhTeam,
+        teamB: IPLTeams.miTeam,
         pitchReport: {
-          'condition': 'Dry',
-          'expected_behavior': 'Will assist spinners',
+          'condition': 'Fresh pitch',
+          'behavior': 'Good for batting',
         },
-        weatherInfo: {'temperature': '30°C', 'weather': 'Humid'},
+        weatherInfo: {
+          'temperature': '35°C',
+          'humidity': '65%',
+          'windSpeed': '10 km/h',
+        },
       ),
-      // ECS T10 Match 1
       Match(
         id: 'm4',
-        tournamentName: 'ECS T10 Santarem Premier',
-        venue: 'Santarem',
-        matchTime: DateTime.now().add(const Duration(hours: 3, minutes: 31)),
+        tournamentName: 'Indian T20 League',
+        venue: 'Wankhede Stadium, Mumbai',
+        matchTime: DateTime(2024, 4, 5, 19, 30),
         status: 'Upcoming',
-        teamA: oeirasTeam,
-        teamB: gamblersTeam,
+        teamA: IPLTeams.miTeam,
+        teamB: IPLTeams.rrTeam,
         pitchReport: {
-          'condition': 'Good',
-          'expected_behavior': 'Batting friendly',
+          'condition': 'Hard surface',
+          'behavior': 'Good pace and bounce',
         },
-        weatherInfo: {'temperature': '25°C', 'weather': 'Sunny'},
+        weatherInfo: {
+          'temperature': '33°C',
+          'humidity': '80%',
+          'windSpeed': '15 km/h',
+        },
       ),
-      // ECS T10 Match 2
       Match(
         id: 'm5',
-        tournamentName: 'ECS T10 Santarem Premier',
-        venue: 'Santarem',
-        matchTime: DateTime.now().add(const Duration(hours: 5, minutes: 31)),
+        tournamentName: 'Indian T20 League',
+        venue: 'M.Chinnaswamy Stadium, Bangalore',
+        matchTime: DateTime(2024, 4, 6, 19, 30),
         status: 'Upcoming',
-        teamA: gorkhaTeam,
-        teamB: lisbonTeam,
+        teamA: IPLTeams.rcbTeam,
+        teamB: IPLTeams.lsgTeam,
         pitchReport: {
-          'condition': 'Good',
-          'expected_behavior': 'Batting friendly',
+          'condition': 'Batting friendly',
+          'behavior': 'High scoring expected',
         },
-        weatherInfo: {'temperature': '25°C', 'weather': 'Sunny'},
+        weatherInfo: {
+          'temperature': '28°C',
+          'humidity': '60%',
+          'windSpeed': '12 km/h',
+        },
       ),
-    ];
-
-    setState(() {
-      _upcomingMatches.addAll(upcomingMatches);
-    });
+    ]);
   }
 
   @override
@@ -238,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(width: 8),
             const Text(
-              'DREAM11',
+              'DREAMIQ',
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -288,185 +203,16 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
-          _buildPromotion(),
-          _buildSportsTabs(),
+          LiveScoreCard(
+            teamA: IPLTeams.rrTeam,
+            teamB: IPLTeams.cskTeam,
+            result: 'RR beat CHE by 6 runs',
+          ),
           _buildTournamentFilters(),
           Expanded(child: _buildMatchList()),
         ],
       ),
-      bottomNavigationBar: _buildBottomNavBar(),
     );
-  }
-
-  Widget _buildPromotion() {
-    return Container(
-      height: 120,
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        gradient: const LinearGradient(
-          colors: [Color(0xFF3C1053), Color(0xFF7B1FA2)],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 3,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    'FREE ENTRY',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    'BIG WINNINGS',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 4,
-            child: Stack(
-              alignment: Alignment.centerRight,
-              children: [
-                Container(
-                  height: 100,
-                  width: 150,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.directions_car, color: Colors.white, size: 40),
-                      SizedBox(width: 8),
-                      Icon(
-                        Icons.sports_motorsports,
-                        color: Colors.white,
-                        size: 40,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOfferBanner() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-      color: const Color(0xFFFFCD36),
-      child: Row(
-        children: [
-          Icon(Icons.star, color: Colors.red[800], size: 20),
-          const SizedBox(width: 8),
-          const Text(
-            '100% off, up to ₹20 per match*',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSportsTabs() {
-    return Column(
-      children: [
-        _buildOfferBanner(),
-        Container(
-          height: 50,
-          decoration: const BoxDecoration(
-            border: Border(
-              bottom: BorderSide(color: Color(0xFFEEEEEE), width: 1),
-            ),
-          ),
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: _sports.length,
-            itemBuilder: (context, index) {
-              final sport = _sports[index];
-              final isSelected = sport == _selectedSport;
-
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _selectedSport = sport;
-                  });
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    border:
-                        isSelected
-                            ? const Border(
-                              bottom: BorderSide(color: Colors.red, width: 2),
-                            )
-                            : null,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        _getSportIcon(sport),
-                        size: 16,
-                        color: isSelected ? Colors.red : Colors.grey,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        sport,
-                        style: TextStyle(
-                          color: isSelected ? Colors.red : Colors.grey[700],
-                          fontWeight:
-                              isSelected ? FontWeight.bold : FontWeight.normal,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  IconData _getSportIcon(String sport) {
-    switch (sport) {
-      case 'Cricket':
-        return Icons.sports_cricket;
-      case 'Football':
-        return Icons.sports_soccer;
-      case 'Kabaddi':
-        return Icons.sports_kabaddi;
-      case 'Basketball':
-        return Icons.sports_basketball;
-      default:
-        return Icons.sports;
-    }
   }
 
   Widget _buildTournamentFilters() {
@@ -478,18 +224,41 @@ class _HomeScreenState extends State<HomeScreen> {
         itemCount: _tournaments.length,
         itemBuilder: (context, index) {
           final tournament = _tournaments[index];
+          final isSelected = tournament == _selectedTournament;
 
-          return Container(
-            margin: const EdgeInsets.only(right: 8),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey[300]!),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-              child: Text(
-                tournament,
-                style: TextStyle(fontSize: 13, color: Colors.grey[800]),
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                _selectedTournament = tournament;
+              });
+            },
+            child: Container(
+              margin: const EdgeInsets.only(right: 8),
+              decoration: BoxDecoration(
+                color:
+                    isSelected
+                        ? AppTheme.primaryColor.withValues(alpha: 0.1 * 255)
+                        : null,
+                border: Border.all(
+                  color: isSelected ? AppTheme.primaryColor : Colors.grey[300]!,
+                ),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 6,
+                ),
+                child: Text(
+                  tournament,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color:
+                        isSelected ? AppTheme.primaryColor : Colors.grey[800],
+                    fontWeight:
+                        isSelected ? FontWeight.bold : FontWeight.normal,
+                  ),
+                ),
               ),
             ),
           );
@@ -503,16 +272,29 @@ class _HomeScreenState extends State<HomeScreen> {
       return const Center(child: Text('No matches available'));
     }
 
+    final filteredMatches =
+        _upcomingMatches
+            .where((match) => match.tournamentName == _selectedTournament)
+            .toList();
+
+    if (filteredMatches.isEmpty) {
+      return Center(
+        child: Text(
+          'No matches available for $_selectedTournament',
+          style: const TextStyle(color: Colors.grey),
+        ),
+      );
+    }
+
     return ListView.builder(
       padding: const EdgeInsets.all(12),
-      itemCount: _upcomingMatches.length,
+      itemCount: filteredMatches.length,
       itemBuilder: (context, index) {
-        final match = _upcomingMatches[index];
+        final match = filteredMatches[index];
 
         // If it's a new tournament type, show the header
         if (index == 0 ||
-            match.tournamentName !=
-                _upcomingMatches[index - 1].tournamentName) {
+            match.tournamentName != filteredMatches[index - 1].tournamentName) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -549,7 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String _getTournamentShortName(String name) {
     if (name == 'Indian T20 League') {
       return 'T20';
-    } else if (name == 'ECS T10 Santarem Premier') {
+    } else if (name == 'ECS T10') {
       return 'T10';
     } else if (name == 'Kolkata NCC T20') {
       return 'T20';
@@ -561,8 +343,8 @@ class _HomeScreenState extends State<HomeScreen> {
   String _getTournamentFullName(String name) {
     if (name == 'Kolkata NCC T20') {
       return '• Kolkata NCC T20';
-    } else if (name == 'ECS T10 Santarem Premier') {
-      return '• ECS T10 Santarem Premier';
+    } else if (name == 'ECS T10') {
+      return '• ECS T10';
     } else {
       return '';
     }
@@ -749,7 +531,7 @@ class _HomeScreenState extends State<HomeScreen> {
               '1:00 PM',
               style: TextStyle(color: Colors.grey, fontSize: 12),
             ),
-          ] else if (match.tournamentName == 'ECS T10 Santarem Premier' &&
+          ] else if (match.tournamentName == 'ECS T10' &&
               match.teamA.shortName == 'OEI') ...[
             Text(
               '3h : ${timeLeft.inMinutes % 60}m',
@@ -763,7 +545,7 @@ class _HomeScreenState extends State<HomeScreen> {
               '2:30 PM',
               style: TextStyle(color: Colors.grey, fontSize: 12),
             ),
-          ] else if (match.tournamentName == 'ECS T10 Santarem Premier' &&
+          ] else if (match.tournamentName == 'ECS T10' &&
               match.teamA.shortName == 'GOR') ...[
             Text(
               '5h : ${timeLeft.inMinutes % 60}m',
@@ -798,33 +580,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ],
       ],
-    );
-  }
-
-  Widget _buildBottomNavBar() {
-    return BottomNavigationBar(
-      selectedItemColor: Colors.red,
-      unselectedItemColor: Colors.grey,
-      selectedLabelStyle: const TextStyle(fontSize: 12),
-      unselectedLabelStyle: const TextStyle(fontSize: 12),
-      type: BottomNavigationBarType.fixed,
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.playlist_add_check),
-          label: 'My Matches',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.monetization_on),
-          label: 'DreamCoins',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person_add),
-          label: 'Refer & Win',
-        ),
-        BottomNavigationBarItem(icon: Icon(Icons.gamepad), label: 'Games'),
-      ],
-      currentIndex: 0,
     );
   }
 }
